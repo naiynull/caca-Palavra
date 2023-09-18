@@ -8,31 +8,23 @@ using namespace std;
 
 int main()
 {
+    Palavra P;
 
     // ler todas as palavras em um array
-    const int Size = 11; // quantidade de palavras presente no arquivo
+    const int Tam = 1471; // quantidade de palavras presente no arquivo
 
-    ifstream arq;
-    arq.open("Palavra.txt");
 
-    string let[Size];
+
+
+   // ifstream arq;
+    //arq.open("Palavra.txt");
+
+   // string let[Tam];
     // vamos manter esse vector é tipo uma matriz de strings (estrutura 2d)
-    vector<vector<string>> crowssword;
+   // vector<vector<string>> crowssword;
     // interar um vetor em outro vetor
-    crowssword.resize(Size);
-
-    for (int i; i < 10; i++)
-    {
-        crowssword[i].resize(Size);
+    std::string palavraSorteada = SortearPalavra("Palavras.txt");
+    if (!palavraSorteada.empty()) {
+        std::cout << "Palavra sorteada: " << palavraSorteada << std::endl;
     }
-    string linha;
-    int cont = 0;
-    while (getline(arq, linha))
-    {
-        // colocaremos cada palavra em um indice assim amarzenando cada palavra em uma linha
-        let[cont] = linha;
-        cont++;
-    }
-// variavel de contador 
-    return 0;
 }
