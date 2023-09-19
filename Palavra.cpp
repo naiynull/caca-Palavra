@@ -8,9 +8,9 @@ Palavra::Palavra()
 std::string Palavra::LetrasCompartilhadas( std::string, std::string){
 
 
-}
+};
 
-std::string Palavra::SortearPalavra(const std::string& Palavras.txt) {
+std::string Palavra::SortearPalavra(const std::ifstream &Palavras) {//passando o endereço o arq palavra como parametro 
      // Abrir o arquivo de texto
     std::ifstream arquivo("Palavras.txt");
     //verificar se o arquivo pode ser aberto
