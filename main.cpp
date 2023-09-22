@@ -4,51 +4,112 @@
 #include <ctime>
 #include <cstdlib>
 
-void GerarPalavra(const char* Palavra) {
-    const int numPalavras = 10;
-    std::string selecionadas[numPalavras];
+class Palavra {
+private:
+    std::string selecionada;
+    std::string Palavras;
 
-    std::ifstream arq(Palavra);
+public:
+    const char *wordcenter;
 
-    if (!arq.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo." << std::endl;
-        return;
+    std::string GetSeleciona() {
+        return selecionada;
     }
 
-    // Seed para geração de números aleatórios
-    std::srand(std::time(nullptr));
+    std::string GetPalavras() {
+        return Palavras;
+    }
 
-    std::string Palavras;
-    int Total = 0;
+    std::string Centralpala(const char *wordcenter) {
+        const int numPalavras = 1471;
 
-    // Ler todas as palavras do arquivo
-    while (arq >> Palavras) {
-        Total++;
+        std::ifstream arq(wordcenter);
 
-        // Se ainda não selecionamos 10 palavras aleatórias, escolha esta palavra
-        if (Total <= numPalavras) {
-            selecionadas[Total - 1] = Palavras;
-        } else {
-            // Caso contrário, substitua uma das palavras aleatórias já escolhidas com probabilidade 10/Total
-            int let = std::rand() % Total;
-            if (let < numPalavras) {
-                selecionadas[let] = Palavras;
+        if (!arq.is_open()) {
+            std::cerr << "Erro ao abrir o arquivo." << std::endl;
+            return "";
+        }
+
+        int Total = 0;
+        int palavrasDe10Caracteres = 0;
+
+        // Ler todas as palavras do arquivo
+        while (arq >> Palavras) {
+            Total++;
+
+            // Verificar se a palavra tem 10 caracteres
+            if (Palavras.length() == 10) {
+                palavrasDe10Caracteres++;
+
+                // Com probabilidade 1/palavrasDe10Caracteres, escolher esta palavra
+                if (rand() % palavrasDe10Caracteres == 0) {
+                    selecionada = Palavras;
+                }
             }
+        }
+
+        arq.close();
+
+        if (!selecionada.empty()) {
+            // Imprimir a palavra selecionada aleatoriamente com 10 caracteres
+            std::cout << "Palavra selecionada aleatoriamente: " << selecionada << std::endl;
+        } else {
+            std::cout << "Nenhuma palavra com 10 caracteres encontrada." << std::endl;
+        }
+        return selecionada;
+    }
+ void GerarPalavra(const char* word) {
+        const int numPalavras = 10;
+        std::ifstream arq(word);
+        if (!arq.is_open()) {
+            std::cerr << "Erro ao abrir o arquivo." << std::endl;
+            return;
+        }
+
+        std::string selecionadas[numPalavras];
+        int Total = 0;
+
+        // Ler todas as palavras do arquivo
+        while (arq >> Palavras) {
+            Total++;
+        
+            // Se ainda não selecionamos 10 palavras aleatórias, escolha esta palavra
+            if (Total <= numPalavras) {
+                selecionadas[Total - 1] = Palavras;
+            } else {
+                // Com probabilidade 10/Total, substitua uma das palavras aleatórias já escolhidas
+                int let = rand() % Total;
+                if (let < numPalavras) {
+                    selecionadas[let] = Palavras;
+                }
+            }
+        }
+
+        arq.close();
+
+        // Imprimir as 10 palavras selecionadas aleatoriamente
+        for (int i = 0; i < numPalavras; i++) {
+            std::cout << selecionadas[i] << std::endl;
         }
     }
 
-    arq.close();
-
-    // Imprimir as 10 palavras selecionadas aleatoriamente
-    for (int i = 0; i < numPalavras; i++) {
-        std::cout << selecionadas[i] << std::endl;
+    void sortearpalavra(const char *wordcenter) {
+        std::string palavraprincipal = Centralpala(wordcenter); // Chama Centralpala para selecionar a palavra
+       std::string palavraSelecionada = GetSeleciona();
+        if (!palavraSelecionada.empty()) {
+            // Imprimir a palavra selecionada aleatoriamente com 10 caracteres
+            std::cout << "Palavra selecionada em sortearpalavra: " << palavraSelecionada << std::endl;
+        } else {
+            std::cout << "Nenhuma palavra com 10 caracteres encontrada em sortearpalavra." << std::endl;
+        }
     }
-}
-
-string PalavraCentral()
+};
 
 int main() {
-    const char* Palavra = "Palavras.txt";
-    GerarPalavra(Palavra);
+    srand(time(NULL));
+    const char* word = "Palavras.txt";
+    Palavra P;
+    P.GerarPalavra(word);
+    P.sortearpalavra(word);
     return 0;
 }
