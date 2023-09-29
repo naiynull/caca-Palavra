@@ -109,24 +109,42 @@ public:
         return Palaword;
     }
 
-    std::string encontrapala(char letra)
-    {
-        int i;
-        for (i = 0; i < 1471; i++)
-        {
-            do
-            {
-                i = rand() % 1471;
-            } while (LerPalavrasDoArquivo(wordcenter)[i] != letra);
-        }
-        return Palavras[i];
+  std::string encontrapala(char letra)
+{
+    for( int i =0 ; i < 1471 ; i++)
+    if(Palavra.find(letra)!= -1){
+        return Palavra;
     }
+}
+
+
+void dezpala()
+{
+    std::string horizontais[10];
+    for (int i = 0; i < selecionada.length(); i++)
+    {
+        horizontais[i] = encontrapala(selecionada[i]);
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        int cruzamento = horizontais[i].find(palavras[i]);
+        int numespaco = 50 - cruzamento;
+
+        for (int j = 0; j < numespaco; j++)
+        {
+            std::cout << " ";
+        }
+
+        std::cout << horizontais[i] << std::endl;
+    }
+}
 
     void PreencherMatriz()
     {
         // Verifique se a palavra selecionada tem exatamente 10 caracteres
         if (selecionada.length() != 10)
-        {a
+        {
             std::cerr << "A palavra selecionada não tem 10 caracteres." << std::endl;
             return;
         }
@@ -169,11 +187,13 @@ int main()
 {
     srand(time(NULL));
     const char *word = "Palavras.txt";
-    std::cout << "oi";
+
     Palavra P;
-    P.encontrapala(Palavras[i]: + P.encontrarpala(Palavras[i]));
     P.sortearpalavra(word);
     P.PreencherMatriz();
     P.ExibirMatriz();
+    P.dezpala(); // Chame a função dezpala após preencher a matriz
+
     return 0;
 }
+
