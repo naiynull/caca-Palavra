@@ -3,16 +3,19 @@
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
+#include <cstring>  // Para strlen
 
 class Palavra
 {
 private:
     std::string selecionada;
-    std::string palavras[10]; // Matriz de 10 linhas
-    char grade[10][50];       // Matriz de 10 linhas e 50 colunas
+    std::string palavras[10]; // Tamanho fixo de 10 para as palavras verticais
+    char grade[10][50] = {{0}};
+    int tentativasRestantes;
+    std::string palavraEncontrada;
 
 public:
-    const char *wordcenter;
+    Palavra() : tentativasRestantes(10), palavraEncontrada("") {}
 
     std::string GetSeleciona()
     {
@@ -24,11 +27,28 @@ public:
         return palavras[index];
     }
 
-    std::string Centralpala(const char *wordcenter)
+    void DecrementarTentativas()
     {
-        const int numPalavras = 1471;
-        std::string Palavras; // Declare a variável para armazenar as palavras
+        tentativasRestantes--;
+    }
 
+    int GetTentativasRestantes()
+    {
+        return tentativasRestantes;
+    }
+
+    std::string GetPalavraEncontrada()
+    {
+        return palavraEncontrada;
+    }
+
+    void setPalavraEncontrada(const std::string &palavra)
+    {
+        palavraEncontrada = palavra;
+    }
+
+    std::string Centralpala(const std::string &wordcenter)
+    {
         std::ifstream arq(wordcenter);
 
         if (!arq.is_open())
@@ -37,23 +57,17 @@ public:
             return "";
         }
 
-        int Total = 0;
-        int palavrasDe10Caracteres = 0;
+        int palavrasValidas = 0;
+        std::string palavra;
 
-        // Ler todas as palavras do arquivo
-        while (arq >> Palavras)
+        while (arq >> palavra)
         {
-            Total++;
-
-            // Verificar se a palavra tem 10 caracteres
-            if (Palavras.length() == 10)
+            if (palavra.length() == 10) // Verifica se a palavra tem tamanho igual a 10
             {
-                palavrasDe10Caracteres++;
-
-                // Com probabilidade 1/palavrasDe10Caracteres, escolher esta palavra
-                if (rand() % palavrasDe10Caracteres == 0)
+                palavrasValidas++;
+                if (rand() % palavrasValidas == 0)
                 {
-                    selecionada = Palavras;
+                    selecionada = palavra;
                 }
             }
         }
@@ -62,32 +76,30 @@ public:
 
         if (!selecionada.empty())
         {
-            // Imprimir a palavra selecionada aleatoriamente com 10 caracteres
             std::cout << "Palavra selecionada aleatoriamente: " << selecionada << std::endl;
         }
         else
         {
-            std::cout << "Nenhuma palavra com 10 caracteres encontrada." << std::endl;
+            std::cout << "Nenhuma palavra válida encontrada." << std::endl;
         }
         return selecionada;
     }
 
-    void sortearpalavra(const char *wordcenter)
+    void sortearpalavra(const std::string &wordcenter)
     {
-        Centralpala(wordcenter); // Chama Centralpala para selecionar a palavra
+        Centralpala(wordcenter);
         std::string palavraSelecionada = GetSeleciona();
         if (!palavraSelecionada.empty())
         {
-            // Imprimir a palavra selecionada aleatoriamente com 10 caracteres
             std::cout << "Palavra selecionada em sortearpalavra: " << palavraSelecionada << std::endl;
         }
         else
         {
-            std::cout << "Nenhuma palavra com 10 caracteres encontrada em sortearpalavra." << std::endl;
+            std::cout << "Nenhuma palavra válida encontrada em sortearpalavra." << std::endl;
         }
     }
 
-    std::string LerPalavrasDoArquivo(const char *word10)
+    std::string LerPalavrasDoArquivo(const std::string &word10)
     {
         std::ifstream arquivo(word10);
         std::string Palaword;
@@ -101,7 +113,7 @@ public:
         std::string palavra;
         while (arquivo >> palavra)
         {
-            Palaword += palavra + " "; // Adiciona a palavra lida à string Palaword
+            Palaword += palavra + " ";
         }
 
         arquivo.close();
@@ -109,50 +121,48 @@ public:
         return Palaword;
     }
 
-  std::string encontrapala(char letra)
-{
-    for( int i =0 ; i < 1471 ; i++)
-    if(Palavra.find(letra)!= -1){
-        return Palavra;
-    }
-}
-
-
-void dezpala()
-{
-    std::string horizontais[10];
-    for (int i = 0; i < selecionada.length(); i++)
+    std::string encontrapala(char letra)
     {
-        horizontais[i] = encontrapala(selecionada[i]);
-    }
-
-    for (int i = 0; i < 10; i++)
-    {
-        int cruzamento = horizontais[i].find(palavras[i]);
-        int numespaco = 50 - cruzamento;
-
-        for (int j = 0; j < numespaco; j++)
+        for (int i = 0; i < 10; i++)
         {
-            std::cout << " ";
+            if (palavras[i].find(letra) != std::string::npos)
+            {
+                return palavras[i];
+            }
         }
-
-        std::cout << horizontais[i] << std::endl;
+        return "";
     }
-}
+
+    void dezpala()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            int inicioEspaco = 25 - palavras[i].length();
+            for (int j = 0; j < 50; j++)
+            {
+                if (j < inicioEspaco || j >= inicioEspaco + palavras[i].length())
+                {
+                    std::cout << " ";
+                }
+                else
+                {
+                    std::cout << palavras[i][j - inicioEspaco];
+                }
+            }
+            std::cout << std::endl;
+        }
+    }
 
     void PreencherMatriz()
     {
-        // Verifique se a palavra selecionada tem exatamente 10 caracteres
-        if (selecionada.length() != 10)
+        if (selecionada.length() == 0)
         {
-            std::cerr << "A palavra selecionada não tem 10 caracteres." << std::endl;
+            std::cerr << "Nenhuma palavra selecionada." << std::endl;
             return;
         }
 
-        // Encontre o ponto de partida para a vertical no centro da matriz (linha 5)
         int inicioVertical = 5 - selecionada.length() / 2;
 
-        // Preencha a matriz com a palavra "centralpala" na vertical
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 50; j++)
@@ -163,7 +173,7 @@ void dezpala()
                 }
                 else
                 {
-                    grade[i][j] = '_'; // Preenche com '.' fora da vertical
+                    grade[i][j] = '_';
                 }
             }
         }
@@ -181,19 +191,68 @@ void dezpala()
             std::cout << std::endl;
         }
     }
+
+    bool VerificarVitoria()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (palavras[i] != GetSeleciona())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 };
 
 int main()
 {
-    srand(time(NULL));
-    const char *word = "Palavras.txt";
+    srand(static_cast<unsigned int>(time(NULL)));
+    const std::string word = "Palavras.txt";
 
     Palavra P;
     P.sortearpalavra(word);
     P.PreencherMatriz();
     P.ExibirMatriz();
-    P.dezpala(); // Chame a função dezpala após preencher a matriz
+    P.dezpala();
+
+    std::string palavraSelecionada = P.GetSeleciona();
+    if (!palavraSelecionada.empty())
+    {
+        std::cout << "Adivinhe as palavras cruzadas!" << std::endl;
+        std::cout << "Você tem " << P.GetTentativasRestantes() << " tentativas." << std::endl;
+
+        while (P.GetTentativasRestantes() > 0)
+        {
+            char letra;
+            std::cout << "Digite uma letra: ";
+            std::cin >> letra;
+
+            std::string encontrada = P.encontrapala(letra);
+            if (!encontrada.empty() && encontrada != P.GetPalavraEncontrada())
+            {
+                std::cout << "Palavra encontrada: " << encontrada << std::endl;
+                P.setPalavraEncontrada(encontrada);
+            }
+            else
+            {
+                std::cout << "Letra incorreta. Você tem " << P.GetTentativasRestantes() - 1 << " tentativas restantes." << std::endl;
+                P.DecrementarTentativas();
+            }
+
+            if (P.VerificarVitoria())
+            {
+                std::cout << "Você ganhou! Adivinhou todas as palavras cruzadas." << std::endl;
+                break;
+            }
+        }
+
+        if (!P.VerificarVitoria())
+        {
+            std::cout << "Você perdeu! As palavras cruzadas eram: " << std::endl;
+            P.dezpala();
+        }
+    }
 
     return 0;
 }
-

@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1695716507 source:c:\users\usuario\caca-palavra\main.cpp
-	<iostream>
+1696196836 source:c:\users\usuario\caca-palavra\main.cpp
 	<fstream>
 	<string>
 	<ctime>
 	<cstdlib>
+	<iostream>
+	<cstring>
 
