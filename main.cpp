@@ -205,52 +205,80 @@ public:
     }
 };
 
-int main()
-{
+
+void Menu(){
+std::cout << "Escolha a dificuldade:" << std::endl;
+std::cout << "1. Fácil " << std::endl;
+std::cout << "2. Médio " << std::endl;
+std::cout << "3. Difícil " << std::endl;
+std::cout << "Digite o número da dificuldade: ";
+}
+int main() {
     srand(static_cast<unsigned int>(time(NULL)));
     const std::string word = "Palavras.txt";
+    int tentativas = 0;
+
+        Menu();
+        int op;
+        std::cin >> op;
+
+        switch (op) {
+            case 1:
+                std::cout<<"Você escolheu a opção facíl\n";
+                std::cout<<"A opção facíl possui 10 tentativas \n";
+                std::cout<<"Boa Sorte!!\n";
+                tentativas = 10;
+                break;
+            case 2:
+                std::cout<<"Você escolheu a opção médio\n";
+                std::cout<<"A opção facíl possui 8 tentativas \n";
+                std::cout<<"Boa Sorte!!\n";
+                tentativas = 10;
+                break;
+            case 3:
+                std::cout<<"Você escolheu a opção difícil\n";
+                std::cout<<"A opção facíl possui 5 tentativas \n";
+                std::cout<<"Boa Sorte!!\n";
+                tentativas = 5;
+                break;
+            default:
+                std::cout << "Opção inválida. Por favor, escolha uma opção válida." << std::endl;
+        }
+
 
     Palavra P;
     P.sortearpalavra(word);
     P.PreencherMatriz();
     P.ExibirMatriz();
-    P.dezpala();
 
     std::string palavraSelecionada = P.GetSeleciona();
-    if (!palavraSelecionada.empty())
-    {
+    if (!palavraSelecionada.empty()) {
         std::cout << "Adivinhe as palavras cruzadas!" << std::endl;
-        std::cout << "Você tem " << P.GetTentativasRestantes() << " tentativas." << std::endl;
+        std::cout << "Você tem " << tentativas << " tentativas." << std::endl;
 
-        while (P.GetTentativasRestantes() > 0)
-        {
+        while (tentativas > 0) {
             char letra;
             std::cout << "Digite uma letra: ";
             std::cin >> letra;
 
             std::string encontrada = P.encontrapala(letra);
-            if (!encontrada.empty() && encontrada != P.GetPalavraEncontrada())
-            {
+            if (!encontrada.empty() && encontrada != P.GetPalavraEncontrada()) {
                 std::cout << "Palavra encontrada: " << encontrada << std::endl;
                 P.setPalavraEncontrada(encontrada);
-            }
-            else
-            {
-                std::cout << "Letra incorreta. Você tem " << P.GetTentativasRestantes() - 1 << " tentativas restantes." << std::endl;
-                P.DecrementarTentativas();
+            } else {
+                std::cout << "Letra incorreta. Você tem " << tentativas - 1 << " tentativas restantes." << std::endl;
+                tentativas--;
             }
 
-            if (P.VerificarVitoria())
-            {
+            if (P.VerificarVitoria()) {
                 std::cout << "Você ganhou! Adivinhou todas as palavras cruzadas." << std::endl;
                 break;
             }
         }
 
-        if (!P.VerificarVitoria())
-        {
+        if (!P.VerificarVitoria()) {
             std::cout << "Você perdeu! As palavras cruzadas eram: " << std::endl;
-            P.dezpala();
+            P.dezpala(); // Chama dezpala para imprimir as palavras quando o jogador perde.
         }
     }
 
